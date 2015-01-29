@@ -27,11 +27,12 @@ negativo (Prediccion _) = error "Esto no es una Prediccion"
 
 obtenerCadena :: Oraculo -> String -> Maybe [(String, Bool)]
 obtenerCadena (Pregunta s1 oPos oNeg) s2 =  
-	if (obtenerCadena oPos s2) == Nothing then
-		(if (obtenerCadena oNeg s2) == Nothing then Nothing else
-		 justAppend (Just [(s1,False)]) (obtenerCadena oNeg s2)
-		)
-	else justAppend (Just [(s1,True)]) (obtenerCadena oPos s2)
+	let positivo = obtenerCadena oPos s2 ; negativo = obtenerCadena oNeg s2 in
+	case positivo of
+		Nothing -> case negativo of
+			Nothing -> Nothing
+			Just l  -> Just ([(s1,False)] ++ l)
+		Just l -> Just ([(s1,True)] ++ l)
 obtenerCadena (Prediccion s1) s2 = if s1 == s2 then Just [] else Nothing
 
 -- Funcion auxiliar para obtenerCadena 
@@ -44,29 +45,7 @@ obtenerEstadisticas :: Oraculo -> (Integer,Integer,Integer)
 obtenerEstadisticas x = obtEst x 0 0 0
 
 obtEst :: Oraculo -> Integer -> Integer -> Integer -> (Integer,Integer,Integer)
-obtEst (Prediccion s1) min max acum = (min,max,acum) 
-obtEst (Pregunta s1 oPos oNeg) min max acum = obtEst 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+obtEst o i j k = (0,0,0)
 
 
 {-
@@ -74,8 +53,3 @@ andMaybe :: Maybe[(String,Bool)] -> Maybe[(String,Bool)] -> Maybe[(String,Bool)]
 andMaybe (Just x) _ = Just x
 andMaybe Nothing x = x
 -}
-
-
-
-
-
