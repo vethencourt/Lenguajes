@@ -42,11 +42,22 @@ justAppend Nothing x = x
 justAppend x Nothing = x
 
 obtenerEstadisticas :: Oraculo -> (Integer,Integer,Integer)
-obtenerEstadisticas x = obtEst x 0 0 0
+obtenerEstadisticas x = (\(min,max,answers,sumLength) -> (min,max,div sumLength answers)) (obtEst x 0)
 
-obtEst :: Oraculo -> Integer -> Integer -> Integer -> (Integer,Integer,Integer)
-obtEst o i j k = (0,0,0)
-
+obtEst :: Oraculo -> Integer -> (Integer,Integer,Integer,Integer)
+obtEst (Pregunta _ oPos oNeg) nivel = (\(min1,max1,answers1,sumLength1) (min2,max2,answers2,sumLength2) -> 
+						if min1<min2 then
+							if max1>max2 then
+								(min1,max1,answers1+answers2,sumLength1+sumLength2)
+							else
+								(min1,max2,answers1+answers2,sumLength1+sumLength2)
+						else
+							if max1>max2 then
+								(min2,max1,answers1+answers2,sumLength1+sumLength2)
+							else
+								(min2,max2,answers1+answers2,sumLength1+sumLength2)
+					) (obtEst oPos (nivel+1)) (obtEst oNeg (nivel+1))
+obtEst (Prediccion _) nivel = (nivel,nivel,1,nivel)
 
 {-
 andMaybe :: Maybe[(String,Bool)] -> Maybe[(String,Bool)] -> Maybe[(String,Bool)] 
