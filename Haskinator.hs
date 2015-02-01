@@ -1,17 +1,28 @@
 module Haskinator where
 
+main = do
+	putStrLn "Haskinator!"
+	putStrLn "Seleccione una opcion indicando su numero:"
+	putStrLn "(1) Crear oraculo nuevo."
+	putStrLn "(2) Predecir"
+	putStrLn "(3) Cargar"
+	putStrLn "(4) Consultar pregunta crucial"
+	opcion <- getLine
+
+	case getLine of
+	1 ->
+	2 ->
+	3 ->
+	4 ->
+	main
+
 crearOraculo :: Maybe Oraculo
 crearOraculo = Nothing
 
 predecir :: Oraculo
-predecir (Pregunta s1 oPos oNeg) = -print- s1 ; if "si" then predecir oPos else predecir oNeg
-predecir (Prediccion s) = s ; if "si" then -print- "Woohoo" else "en q c dif?" ...
 
-persistir (imprimir en archivo) :: String -> File
+persistir :: String -> File
 
 cargar :: String -> Maybe Oraculo
 
 pregCrucial :: String -> String -> Maybe Oraculo
-
-
- 
