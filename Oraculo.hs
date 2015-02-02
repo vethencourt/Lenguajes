@@ -1,7 +1,9 @@
-module Oraculo where
+module Oraculo
+	(Oraculo(Prediccion,Pregunta),crearPrediccion,crearPregunta,
+	prediccion,pregunta,positivo,negativo,obtenerCadena,obtenerEstadisticas) where
 
 data Oraculo = Prediccion String | Pregunta String Oraculo Oraculo
-	deriving (Show,Eq)
+	deriving (Show,Eq,Read)
 	
 crearPrediccion :: String -> Oraculo
 crearPrediccion = Prediccion
@@ -35,12 +37,6 @@ obtenerCadena (Pregunta s1 oPos oNeg) s2 =
 		Just l -> Just ([(s1,True)] ++ l)
 obtenerCadena (Prediccion s1) s2 = if s1 == s2 then Just [] else Nothing
 
--- Funcion auxiliar para obtenerCadena 
-justAppend :: Maybe [(String, Bool)] -> Maybe [(String, Bool)] -> Maybe [(String, Bool)]
-justAppend (Just x) (Just y) = Just (x++y)
-justAppend Nothing x = x
-justAppend x Nothing = x
-
 obtenerEstadisticas :: Oraculo -> (Integer,Integer,Integer)
 obtenerEstadisticas x = (\(min,max,answers,sumLength) -> (min,max,div sumLength answers)) (obtEst x 0)
 
@@ -58,9 +54,3 @@ obtEst (Pregunta _ oPos oNeg) nivel = (\(min1,max1,answers1,sumLength1) (min2,ma
 								(min2,max2,answers1+answers2,sumLength1+sumLength2)
 					) (obtEst oPos (nivel+1)) (obtEst oNeg (nivel+1))
 obtEst (Prediccion _) nivel = (nivel,nivel,1,nivel)
-
-{-
-andMaybe :: Maybe[(String,Bool)] -> Maybe[(String,Bool)] -> Maybe[(String,Bool)] 
-andMaybe (Just x) _ = Just x
-andMaybe Nothing x = x
--}

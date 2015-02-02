@@ -1,4 +1,5 @@
 module Haskinator where
+import Oraculo
 
 main = do
 	putStrLn "Haskinator!"
@@ -9,20 +10,20 @@ main = do
 	putStrLn "(4) Consultar pregunta crucial"
 	opcion <- getLine
 
-	case getLine of
-	1 ->
-	2 ->
+{-	case opcion of 
+	1 -> let oraculo = crearOraculo
+	2 -> 
 	3 ->
 	4 ->
-	main
+-}	main
 
 crearOraculo :: Maybe Oraculo
 crearOraculo = Nothing
 
-predecir :: Oraculo
+persistir :: String -> Maybe Oraculo -> IO ()
+persistir fileName (Just oraculo) = writeFile fileName (show oraculo) 
+persistir fileName Nothing = error "Oraculo vacio"
 
-persistir :: String -> File
 
-cargar :: String -> Maybe Oraculo
+--predecir :: Oraculo
 
-pregCrucial :: String -> String -> Maybe Oraculo
