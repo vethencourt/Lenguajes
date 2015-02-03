@@ -1,7 +1,7 @@
 module Oraculo
 	(Oraculo(Prediccion,Pregunta),crearPrediccion,crearPregunta,
 	prediccion,pregunta,positivo,negativo,obtenerCadena,obtenerEstadisticas) where
-
+import Data.Maybe
 data Oraculo = Prediccion String | Pregunta String Oraculo Oraculo
 	deriving (Show,Eq,Read)
 	

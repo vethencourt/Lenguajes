@@ -2,20 +2,23 @@ import Oraculo
 import Data.Maybe
 
 main = do
-	menu (Just (Pregunta ("Caga en periodico?") (Prediccion "Eva") (Prediccion "Priki")))
+	putStrLn ""
+	putStrLn "Bienvenido a ¡¡HASKINATOR!!"
+	menu Nothing
 	main
 
 menu :: Maybe Oraculo -> IO ()
 menu x = do
-	putStrLn "Haskinator!"
+	putStrLn ""
 	putStrLn "Seleccione una opcion indicando su numero:"
 	putStrLn "(1) Crear oraculo nuevo."
 	putStrLn "(2) Predecir"
 	putStrLn "(3) Persistir"
 	putStrLn "(4) Cargar"
 	putStrLn "(5) Consultar pregunta crucial"
-	putStrLn "(6) Consultar estadistica"
+	putStrLn "(6) Consultar estadística"
 	opcion <- getLine
+	putStrLn ""
 
 	case opcion of 	
 		"1" -> menu crearOraculo
@@ -30,21 +33,26 @@ menu x = do
 			putStrLn "Especifique el nombre del archivo para cargar el oraculo"
 			fileName <- getLine
 			x <- cargar fileName
+			putStrLn "Archivo cargado satisfactoriamente"
+			putStrLn ""
 			menu x
 		"5" -> do
-			putStrLn "Introduzca la primera prediccion"
+			putStrLn "Introduzca la primera predicción"
 			s1 <- getLine
-			putStrLn "Introduzca la segunda prediccion"			
+			putStrLn "Introduzca la segunda predicción"			
 			s2 <- getLine
 			putStrLn (pregCrucial s1 s2 x)
 			menu x
 		"6" -> 
 			if isNothing x then
-				putStrLn "Oraculo vacio"
+				putStrLn "Oraculo vacío"
 			else
 				do 
 					putStrLn (showObtEst (obtenerEstadisticas (fromJust x)))
 					menu x
+		_ -> do
+			putStrLn "Introduzca un número válido"
+			menu x
 
 
 crearOraculo :: Maybe Oraculo
@@ -52,10 +60,32 @@ crearOraculo = Nothing
 
 persistir :: String -> Maybe Oraculo -> IO ()
 persistir fileName (Just oraculo) = writeFile fileName (show oraculo) 
-persistir fileName Nothing = error "Oraculo vacio"
+persistir fileName Nothing = error "Oraculo vacío"
 
 pregCrucial :: String -> String -> Maybe Oraculo -> String
-pregCrucial _ _ Nothing = "Consulta invalida, oraculo vacio"
+pregCrucial s1 s2 (Just oraculo) =
+	let encontrado1 = fromMaybe [("0",False)] (obtenerCadena oraculo s1); 
+		encontrado2 = fromMaybe [("0",False)] (obtenerCadena oraculo s2) in
+		if ((encontrado1 == [("0",False)]) || (encontrado2 == [("0",False)])) then
+			"Consulta inválida, predicción no encontrada"
+		else 
+			let length1 = (length encontrado1); length2 = (length encontrado2) in
+			--	if length1 == 0 || length2 == 0 then
+				if length1 < length2 then
+					findPadre (reverse encontrado1) (reverse (take length1 encontrado2))
+				else
+					findPadre (reverse (take length2 encontrado1)) (reverse encontrado2)
+				where
+					findPadre (x1:xs1) (x2:xs2) = 
+						if (fst x1) == (fst x2) then (fst x1)
+						else if xs1 /= [] && xs2 /= [] then
+							findPadre xs1 xs2
+						else
+							"Error"
+					findPadre [] [] = "No existen preguntas en el oraculo"
+			
+
+{-pregCrucial _ _ Nothing = "Consulta invalida, oraculo vacio"
 pregCrucial s1 s2 (Just oraculo) = 
 	let encontrado1 = obtenerCadena oraculo s1; encontrado2 = obtenerCadena oraculo s2 in
 	if ((encontrado1 == Nothing) || (encontrado2 == Nothing)) 
@@ -70,13 +100,24 @@ pregCrucial s1 s2 (Just oraculo) =
 				if (tl1 !! 0) == (tl2 !! 0) 
 				then findPadre (Just tl1) (Just tl2)
 				else str1
-
+-}
 predecir :: Maybe Oraculo -> IO (Maybe Oraculo)
 predecir (Just x) = 
 	do
 		aux <- predecirAux x
 		return (Just aux)
-predecir Nothing = return Nothing
+predecir Nothing = 
+	do
+		putStrLn "El oráculo está vacío."
+		putStrLn ""
+		putStrLn "Escribe una pregunta"
+		preg <- getLine
+		putStrLn "Escribe la respuesta que lo cumpla"
+		oPos <- getLine
+		putStrLn "Escribe otra respuesta que no lo cumpla"
+		oNeg <- getLine
+		putStrLn ""
+		return (Just (crearPregunta preg (crearPrediccion oPos) (crearPrediccion oNeg)))
 
 predecirAux :: Oraculo -> IO Oraculo
 predecirAux (Pregunta s1 oPos oNeg) =  
@@ -116,7 +157,7 @@ predecirAux (Prediccion s) =
 
 
 showObtEst :: (Integer,Integer,Integer) -> String
-showObtEst (x,y,z) = "(" ++ show x ++ "," ++ show y ++ "," ++ show z ++ ")"
+showObtEst (x,y,z) = "(minimo: " ++ show x ++ ", maximo: " ++ show y ++ ", promedio: " ++ show z ++ ")"
 --no conseguir = Nothing
 
 
