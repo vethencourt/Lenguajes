@@ -2,7 +2,7 @@ import Oraculo
 import Data.Maybe
 
 main = do
-	menu (Just (Prediccion "Es priki"))
+	menu (Just (Pregunta ("Caga en periodico?") (Prediccion "Eva") (Prediccion "Priki")))
 	main
 
 menu :: Maybe Oraculo -> IO ()
@@ -19,7 +19,9 @@ menu x = do
 
 	case opcion of 	
 		"1" -> menu crearOraculo
-		"2" -> menu x
+		"2" -> do
+					orc <-predecir x
+					menu orc
 		"3" -> do
 			putStrLn "Especifique el nombre del archivo donde se guardara el oraculo"
 			fileName <- getLine
@@ -79,23 +81,25 @@ predecir Nothing = return Nothing
 predecirAux :: Oraculo -> IO Oraculo
 predecirAux (Pregunta s1 oPos oNeg) =  
 	do
-		opos <- predecirAux oPos
-		oneg <- predecirAux oNeg
 		putStrLn s1
 		rpta <- getLine
 		case rpta of
-			"si" -> return (Pregunta s1 opos oNeg)
-			"no" -> return (Pregunta s1 oPos oneg)
+			"si" -> do
+				opos <- predecirAux oPos
+				return (Pregunta s1 opos oNeg)
+			"no" -> do
+				oneg <- predecirAux oNeg
+				return (Pregunta s1 oPos oneg)
 			_ -> 
-				{-do
-					putStrLn "debes responder 'si' o 'no'"-}
-				predecirAux (Pregunta s1 oPos oNeg)
+				do
+					putStrLn "debes responder 'si' o 'no'"
+					predecirAux (Pregunta s1 oPos oNeg)
 predecirAux (Prediccion s) = 
 	do
 		putStrLn ("¿Pensaste en: " ++ s ++ "?")
 		rpta <- getLine
 		case rpta of
-			"si" -> return (Prediccion s)
+			"si" ->  return (Prediccion s)
 			"no" -> 
 				do
 					putStrLn "Escribe una pregunta que diferencie lo que pensaste de lo que yo predije"
