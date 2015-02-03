@@ -79,18 +79,20 @@ predecir Nothing = return Nothing
 predecirAux :: Oraculo -> IO Oraculo
 predecirAux (Pregunta s1 oPos oNeg) =  
 	do
+		opos <- predecirAux oPos
+		oneg <- predecirAux oNeg
 		putStrLn s1
 		rpta <- getLine
 		case rpta of
-			"si" -> (Pregunta s1 (predecirAux oPos) oNeg)
-			"no" -> (Pregunta s1 oPos (predecirAux oNeg))
+			"si" -> return (Pregunta s1 opos oNeg)
+			"no" -> return (Pregunta s1 oPos oneg)
 			_ -> 
-				{-do {
+				{-do
 					putStrLn "debes responder 'si' o 'no'"-}
 				predecirAux (Pregunta s1 oPos oNeg)
 predecirAux (Prediccion s) = 
 	do
-		putStrLn "¿Pensaste en: " ++ s ++ "?"
+		putStrLn ("¿Pensaste en: " ++ s ++ "?")
 		rpta <- getLine
 		case rpta of
 			"si" -> return (Prediccion s)
@@ -106,7 +108,7 @@ predecirAux (Prediccion s) =
 			_ ->
 				do
 					putStrLn "debes responder 'si' o 'no'"
-					return predecirAux (Prediccion s)
+					predecirAux (Prediccion s)
 
 
 showObtEst :: (Integer,Integer,Integer) -> String
