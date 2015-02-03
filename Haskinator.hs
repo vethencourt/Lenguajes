@@ -26,11 +26,11 @@ menu x = do
 			putStrLn "Especifique el nombre del archivo donde se guardara el oraculo"
 			fileName <- getLine
 			persistir fileName x
-		"4" -> menu x {- do
+		"4" -> do
 			putStrLn "Especifique el nombre del archivo para cargar el oraculo"
 			fileName <- getLine
-			cargar (read fileName)
-			--menu (Just y)-}
+			x <- cargar fileName
+			menu x
 		"5" -> do
 			putStrLn "Introduzca la primera prediccion"
 			s1 <- getLine
@@ -119,8 +119,12 @@ showObtEst :: (Integer,Integer,Integer) -> String
 showObtEst (x,y,z) = "(" ++ show x ++ "," ++ show y ++ "," ++ show z ++ ")"
 --no conseguir = Nothing
 
-{-
-cargar :: IO String -> Maybe Oraculo
-cargar x = let y <- x in (Just y) --(\x -> (y<-x) -> Just y)
---predecir :: Oraculo
--}
+
+cargar :: String -> IO (Maybe Oraculo)
+cargar fileName = 
+	do
+		x <- readFile fileName
+		let oraculo :: Oraculo ; oraculo = (read x) in
+			return (Just oraculo)
+		
+
