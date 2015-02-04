@@ -13,19 +13,19 @@ crearPregunta = Pregunta
 
 prediccion :: Oraculo -> String
 prediccion (Prediccion s) = s
-prediccion (Pregunta _ _ _) = error "Esto no es una Pregunta"
+prediccion (Pregunta _ _ _) = error "Esto no es una Pregunta."
 
 pregunta :: Oraculo -> String
 pregunta (Pregunta s _ _) = s
-pregunta (Prediccion _) = error "Esto no es una Prediccion"
+pregunta (Prediccion _) = error "Esto no es una Prediccion."
 
 positivo :: Oraculo -> Oraculo
 positivo (Pregunta _ o _) = o
-positivo (Prediccion _) = error "Esto no es una Prediccion"
+positivo (Prediccion _) = error "Esto no es una Prediccion."
 
 negativo :: Oraculo -> Oraculo
 negativo (Pregunta _ _ o) = o
-negativo (Prediccion _) = error "Esto no es una Prediccion"
+negativo (Prediccion _) = error "Esto no es una Prediccion."
 
 obtenerCadena :: Oraculo -> String -> Maybe [(String, Bool)]
 obtenerCadena (Pregunta s1 oPos oNeg) s2 =  
