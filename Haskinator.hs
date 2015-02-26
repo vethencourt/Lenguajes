@@ -1,4 +1,6 @@
-import Oraculo
+module Haskinator (main) where
+
+import Oráculo
 import Data.Maybe
 
 main = do
@@ -7,11 +9,11 @@ main = do
 	menu Nothing
 	main
 
-menu :: Maybe Oraculo -> IO ()
+menu :: Maybe Oráculo -> IO ()
 menu x = do
 	putStrLn ""
 	putStrLn "Seleccione una opcion indicando su numero:"
-	putStrLn "(1) Crear oraculo nuevo."
+	putStrLn "(1) Crear oráculo nuevo."
 	putStrLn "(2) Predecir"
 	putStrLn "(3) Persistir"
 	putStrLn "(4) Cargar"
@@ -21,53 +23,53 @@ menu x = do
 	putStrLn ""
 
 	case opcion of 	
-		"1" -> menu crearOraculo
+		"1" -> menu crearOráculo
 		"2" -> do
 					orc <-predecir x
 					menu orc
 		"3" -> do
-			putStrLn "Especifique el nombre del archivo donde se guardara el oraculo"
+			putStrLn "Especifique el nombre del archivo donde se guardará el oráculo:"
 			fileName <- getLine
 			persistir fileName x
+			menu x
 		"4" -> do
-			putStrLn "Especifique el nombre del archivo para cargar el oraculo"
+			putStrLn "Especifique el nombre del archivo para cargar el oráculo:"
 			fileName <- getLine
 			x <- cargar fileName
-			putStrLn "Archivo cargado satisfactoriamente"
+			putStrLn "Archivo cargado satisfactoriamente."
 			putStrLn ""
 			menu x
 		"5" -> do
-			putStrLn "Introduzca la primera predicción"
+			putStrLn "Introduzca la primera predicción."
 			s1 <- getLine
-			putStrLn "Introduzca la segunda predicción"			
+			putStrLn "Introduzca la segunda predicción."			
 			s2 <- getLine
 			putStrLn (pregCrucial s1 s2 x)
 			menu x
 		"6" -> 
 			if isNothing x then
-				putStrLn "Oraculo vacío"
+				putStrLn "Oráculo vacío."
 			else
 				do 
 					putStrLn (showObtEst (obtenerEstadisticas (fromJust x)))
 					menu x
 		_ -> do
-			putStrLn "Introduzca un número válido"
+			putStrLn "Introduzca un número válido."
 			menu x
 
+crearOráculo :: Maybe Oráculo
+crearOráculo = Nothing
 
-crearOraculo :: Maybe Oraculo
-crearOraculo = Nothing
+persistir :: String -> Maybe Oráculo -> IO ()
+persistir fileName (Just oráculo) = writeFile fileName (show oráculo) 
+persistir fileName Nothing = error "Oráculo vacío."
 
-persistir :: String -> Maybe Oraculo -> IO ()
-persistir fileName (Just oraculo) = writeFile fileName (show oraculo) 
-persistir fileName Nothing = error "Oraculo vacío"
-
-pregCrucial :: String -> String -> Maybe Oraculo -> String
-pregCrucial s1 s2 (Just oraculo) =
-	let encontrado1 = fromMaybe [("0",False)] (obtenerCadena oraculo s1); 
-		encontrado2 = fromMaybe [("0",False)] (obtenerCadena oraculo s2) in
+pregCrucial :: String -> String -> Maybe Oráculo -> String
+pregCrucial s1 s2 (Just oráculo) =
+	let encontrado1 = fromMaybe [("0",False)] (obtenerCadena oráculo s1); 
+		encontrado2 = fromMaybe [("0",False)] (obtenerCadena oráculo s2) in
 		if ((encontrado1 == [("0",False)]) || (encontrado2 == [("0",False)])) then
-			"Consulta inválida, predicción no encontrada"
+			"Consulta inválida, predicción no encontrada."
 		else 
 			let length1 = (length encontrado1); length2 = (length encontrado2) in
 			--	if length1 == 0 || length2 == 0 then
@@ -82,26 +84,9 @@ pregCrucial s1 s2 (Just oraculo) =
 							findPadre xs1 xs2
 						else
 							"Error"
-					findPadre [] [] = "No existen preguntas en el oraculo"
-			
+					findPadre [] [] = "No existen preguntas en el oráculo"
 
-{-pregCrucial _ _ Nothing = "Consulta invalida, oraculo vacio"
-pregCrucial s1 s2 (Just oraculo) = 
-	let encontrado1 = obtenerCadena oraculo s1; encontrado2 = obtenerCadena oraculo s2 in
-	if ((encontrado1 == Nothing) || (encontrado2 == Nothing)) 
-	then "Consulta invalida, prediccion no encontrada"
-	else 
-		if encontrado1 /= (Just [])
-		then (findPadre encontrado1 encontrado2)
-		else
-			"Solo hay una prediccion, no hay preguntas en el oraculo"
-		where
-			findPadre (Just ((str1,bool1):tl1)) (Just ((str2,bool2):tl2)) = 
-				if (tl1 !! 0) == (tl2 !! 0) 
-				then findPadre (Just tl1) (Just tl2)
-				else str1
--}
-predecir :: Maybe Oraculo -> IO (Maybe Oraculo)
+predecir :: Maybe Oráculo -> IO (Maybe Oráculo)
 predecir (Just x) = 
 	do
 		aux <- predecirAux x
@@ -110,16 +95,16 @@ predecir Nothing =
 	do
 		putStrLn "El oráculo está vacío."
 		putStrLn ""
-		putStrLn "Escribe una pregunta"
+		putStrLn "Escribe una pregunta:"
 		preg <- getLine
-		putStrLn "Escribe la respuesta que lo cumpla"
+		putStrLn "Escribe la respuesta que lo cumpla:"
 		oPos <- getLine
-		putStrLn "Escribe otra respuesta que no lo cumpla"
+		putStrLn "Escribe otra respuesta que no lo cumpla:"
 		oNeg <- getLine
 		putStrLn ""
-		return (Just (crearPregunta preg (crearPrediccion oPos) (crearPrediccion oNeg)))
+		return (Just (crearPregunta preg (crearPredicción oPos) (crearPredicción oNeg)))
 
-predecirAux :: Oraculo -> IO Oraculo
+predecirAux :: Oráculo -> IO Oráculo
 predecirAux (Pregunta s1 oPos oNeg) =  
 	do
 		putStrLn s1
@@ -135,37 +120,35 @@ predecirAux (Pregunta s1 oPos oNeg) =
 				do
 					putStrLn "debes responder 'si' o 'no'"
 					predecirAux (Pregunta s1 oPos oNeg)
-predecirAux (Prediccion s) = 
+predecirAux (Predicción s) = 
 	do
 		putStrLn ("¿Pensaste en: " ++ s ++ "?")
 		rpta <- getLine
 		case rpta of
-			"si" ->  return (Prediccion s)
+			"si" ->  return (Predicción s)
 			"no" -> 
 				do
 					putStrLn "Escribe una pregunta que diferencie lo que pensaste de lo que yo predije"
-					putStrLn "cuya respuesta afirmativa sea lo que tu pensaste"
+					putStrLn "cuya respuesta afirmativa sea lo que tú pensaste:"
 					preg <- getLine
-					putStrLn "Escribe lo que pensaste"
+					putStrLn "Escribe lo que pensaste:"
 					rpta <- getLine
 					putStrLn ""
-					return (Pregunta preg (Prediccion rpta) (Prediccion s))
+					return (Pregunta preg (Predicción rpta) (Predicción s))
 			_ ->
 				do
 					putStrLn "debes responder 'si' o 'no'"
-					predecirAux (Prediccion s)
+					predecirAux (Predicción s)
 
 
 showObtEst :: (Integer,Integer,Integer) -> String
-showObtEst (x,y,z) = "(minimo: " ++ show x ++ ", maximo: " ++ show y ++ ", promedio: " ++ show z ++ ")"
---no conseguir = Nothing
+showObtEst (x,y,z) = "mínimo: " ++ show x ++ ", máximo: " ++ show y ++ ", promedio: " ++ show z
 
-
-cargar :: String -> IO (Maybe Oraculo)
+cargar :: String -> IO (Maybe Oráculo)
 cargar fileName = 
 	do
 		x <- readFile fileName
-		let oraculo :: Oraculo ; oraculo = (read x) in
-			return (Just oraculo)
+		let oráculo :: Oráculo ; oráculo = (read x) in
+			return (Just oráculo)
 		
 
