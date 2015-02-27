@@ -17,5 +17,6 @@ estrella(Lista) :-
 	34 is P + N + K + I,
 	34 is I + G + D + A.
 
+/*pemmutar(L1,L2,Res) Unifica los elementos de L1 con L2 y si Res es una variable, se unifica con L1-L2*/
 permutar([X|Xs],Lista,Res) :- select(X,Lista,L1), permutar(Xs,L1,Res).
 permutar([],Res,Res).
