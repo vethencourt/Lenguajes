@@ -5,13 +5,13 @@ unifica(X,Y) :-
 	compound(X), compound(Y),
 	=..(X,[Hx|Tx]), =..(Y,[Hy|Ty]), Hx == Hy, unificaArgs(Tx,Ty), !.
 
-/* ocurre(A,B) tiene exito si la variable A ocurre en el termino (posiblemente completo) B*/
+/* ocurre(A,B) tiene exito si la variable A ocurre en el termino (posiblemente complejo) B*/
 ocurre(X,Y) :- compound(Y), =..(Y,[_|T]), ocAux(X,T).
 ocurre(_,Y) :- var(Y), fail.
 ocurre(_,Y) :- atomic(Y), fail.
 
 /* ocAux(X,L) tiene exito si la variable X ocurre en algun elemento de la lista de argumentos L, donde cada elemento puede ser un termino complejo*/
-ocAux(X,[X|_]).
+ocAux(X,[X|_]) :- var(X).
 ocAux(X,[H|T]) :- compound(H), =..(H,[_|T1]), \+ ocAux(X,T1), ocAux(X,T).
 ocAux(X,[_|T]) :- ocAux(X,T).
 
