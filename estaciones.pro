@@ -22,12 +22,12 @@ estacion(X):-
 	
 	
 % Dada una lista de buenas ciudades, unifica mejorCiudad con la mejor.
-encontrarMenor([(X,Xn),(Y,Yn)|RestoBuenas],MejorCiudad):-
+encontrarMenor([(X,Xn),(_,Yn)|RestoBuenas],MejorCiudad):-
 	Xn < Yn, encontrarMenor([[X,Xn]|RestoBuenas],MejorCiudad).
-encontrarMenor([(X,Xn),(Y,Yn)|RestoBuenas],MejorCiudad):-
+encontrarMenor([(_,Xn),(Y,Yn)|RestoBuenas],MejorCiudad):-
 	Xn >= Yn, encontrarMenor([[Y,Yn]|RestoBuenas],MejorCiudad).
-encontrarMenor([(X,Xn),(Y,Yn)|[]],MejorCiudad):-
-	Xn < Yn, MejorCiudad = X.
-encontrarMenor([(X,Xn),(Y,Yn)|[]],MejorCiudad):-
+encontrarMenor([(X,Xn),(_,Yn)|[]],MejorCiudad):-
+	Xn < Yn, MejorCiudad = X, !.
+encontrarMenor([(_,Xn),(Y,Yn)|[]],MejorCiudad):-
 	Xn >= Yn, MejorCiudad = Y.
-encontrarMenor([(X,Y)],X).
+encontrarMenor([(X,_)],X).
