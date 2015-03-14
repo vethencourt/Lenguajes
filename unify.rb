@@ -1,5 +1,15 @@
+# Archivo: unify.rb
+# Descripción: 
+#    Contiene las clases Term, Atomic, Variable y Functor que presentan
+#    los términos de Prolog.
+# Autores:
+#    F. Miguel Saraiva      Carnet# 09-10794
+#    Ricardo Vethencourt    Carnet# 09-10894
 
-class Atomic
+class Term
+end
+
+class Atomic < Term #Representa los Átomos en Prolog.
   attr_reader :value
 
   def initialize(val)
@@ -16,7 +26,7 @@ class Atomic
 end
 
 
-class Variable
+class Variable < Term #Representa las Variables en Prolog.
   attr_reader :name
 
   def initialize(name)
@@ -33,11 +43,12 @@ class Variable
 end
 
 
-class Functor
+class Functor < Term #Representa los Functores en Prolog.
   attr_reader 
     :name
     :args
 
+  #Initialize recibe el nombre de functor y un arreglo de argumentos.
   def initialize(name,args)
     @name = name
     @args = args
@@ -60,5 +71,3 @@ class Functor
     "Functor #@name#{val}"
   end
 end
-
-
